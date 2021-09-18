@@ -7,11 +7,11 @@ test:
 	pytest
 
 install:
-	python -m pip install -e .
+	pip install -e .
 
 install-dev:
-	python -m pip install -e ".[dev]"
+	pip install -e ".[dev]"
 	pre-commit install
 
 install-test:
-	python -m pip install -e ".[test]"
+	pip install -e ".[test]"
