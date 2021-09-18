@@ -1,6 +1,6 @@
 from setuptools import setup, find_packages
 
-requirements = ['pandas']
+requirements = ['pandas', 'numpy']
 
 test_requirements = ['pytest'] + requirements
 dev_requirements = test_requirements + ['pre-commmit']
