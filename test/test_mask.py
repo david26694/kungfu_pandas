@@ -1,5 +1,3 @@
-import pytest
-
 from kungfu_pandas import mask
 import pandas as pd
 

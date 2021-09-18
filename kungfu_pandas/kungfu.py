@@ -29,20 +29,33 @@ def count(df: pd.DataFrame, by: str = None) -> pd.DataFrame:
 
 def agg_by_col(
     df: pd.DataFrame,
-    by: str,
-    col: str,
+    by: str = None,
+    col: str = None,
     agg: str = 'sum',
     asc: bool = False
-):
+) -> pd.DataFrame:
     """
     Groups by column 'by',
     aggregates column 'col' with 'agg'
     and orders by their values ascending or descedning
     """
-    return (
-        df
-        .groupby(by, as_index=False)
-        [col]
-        .agg(agg)
-        .sort_values(by=col, ascending=asc)
-    )
+
+    # Edge case -> 0 rows
+    if df.shape[0] == 0:
+        if by:
+            return pd.DataFrame({by: [None], col: [None]})
+        else:
+            return pd.DataFrame({col: [None]})
+
+    if by:
+        return (
+            df
+            .groupby(by, as_index=False)
+            [col]
+            .agg(agg)
+            .sort_values(by=col, ascending=asc)
+        )
+    else:
+        return pd.DataFrame(
+            {col: [df[col].agg(agg)]}
+        ).sort_values(by=col, ascending=asc)

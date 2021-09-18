@@ -1,5 +1,3 @@
-import pytest
-
 from kungfu_pandas import count
 import pandas as pd
 
