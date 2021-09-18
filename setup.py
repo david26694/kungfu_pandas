@@ -12,7 +12,7 @@ dev_requirements = test_requirements + [
 
 setup(
     name="kungfu_pandas",
-    version="0.1.1",
+    version="0.1.2",
     packages=find_packages(),
     requires=requirements,
     install_requires=requirements,

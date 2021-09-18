@@ -1,6 +1,6 @@
 # Kungfu pandas
 
-Set of functions that help you work with pandas dataframes.
+Set of functions that help you work with pandas dataframes. Docs are in [here](https://david26694.github.io/kungfu_pandas/index.html).
 
 ## Basic example
 
