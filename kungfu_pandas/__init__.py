@@ -1,1 +1,1 @@
-from kungfu_pandas.kungfu import _mask
+from kungfu_pandas.kungfu import mask
