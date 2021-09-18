@@ -7,7 +7,7 @@ dev_requirements = test_requirements + ['pre-commmit']
 
 setup(
     name="kungfu_pandas",
-    version="0.1.0",
+    version="0.1.1",
     packages=find_packages(),
     requires=requirements,
     install_requires=requirements,
