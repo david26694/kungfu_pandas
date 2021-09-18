@@ -2,8 +2,8 @@ from setuptools import setup, find_packages
 
 requirements = ['pandas']
 
-test_requirements = ['pytest']
-dev_requirements = test_requirements + requirements + ['pre-commmit']
+test_requirements = ['pytest'] + requirements
+dev_requirements = test_requirements + ['pre-commmit']
 
 setup(
     name="kungfu_pandas",
