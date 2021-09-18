@@ -3,7 +3,12 @@ from setuptools import setup, find_packages
 requirements = ['pandas']
 
 test_requirements = ['pytest'] + requirements
-dev_requirements = test_requirements + ['pre-commmit']
+dev_requirements = test_requirements + [
+    'pre-commmit',
+    'mkdocs==1.1',
+    'mkdocs-material==4.6.3',
+    'mkdocstrings==0.8.0'
+]
 
 setup(
     name="kungfu_pandas",
