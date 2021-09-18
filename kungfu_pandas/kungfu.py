@@ -7,19 +7,24 @@ def mask(df: pd.DataFrame, key: str, function: Callable) -> pd.DataFrame:
     return df[function(df[key])]
 
 
-def count(df: pd.DataFrame, by: str) -> pd.DataFrame:
+def count(df: pd.DataFrame, by: str = None) -> pd.DataFrame:
     """Counts by column, if no column is given just gives total count"""
-    if by:
-        return (
-            df
-            .groupby(by)
-            .size()
-            .to_frame()
-            .reset_index()
-            .rename(columns={0: 'n'})
-        )
-    else:
-        return pd.DataFrame(dict(n=df.shape[0]))
+    if not by:
+        # Not grouping, just return the shape
+        return pd.DataFrame(dict(n=[df.shape[0]]))
+
+    if df.shape[0] == 0:
+        # Edge case -> 0 rows but using groups
+        return pd.DataFrame({by: [None], 'n': [0]})
+    # Regular case
+    return (
+        df
+        .groupby(by)
+        .size()
+        .to_frame()
+        .reset_index()
+        .rename(columns={0: 'n'})
+    )
 
 
 def agg_by_col(
