@@ -15,3 +15,9 @@ install-dev:
 
 install-test:
 	pip install -e ".[test]"
+
+docs-deploy:
+	mkdocs gh-deploy
+
+docs-serve:
+	mkdocs serve
