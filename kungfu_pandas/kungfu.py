@@ -1,5 +1,6 @@
 import pandas as pd
-from typing import Callable
+import numpy as np
+from typing import Any, Callable, Dict
 
 
 def mask(df: pd.DataFrame, key: str, function: Callable) -> pd.DataFrame:
@@ -133,3 +134,65 @@ def agg_by_col(
         return pd.DataFrame(
             {col: [df[col].agg(agg)]}
         ).sort_values(by=col, ascending=asc)
+
+
+def case_when(df: pd.DataFrame, d: Dict[Callable, Any]) -> pd.Series:
+    """
+    This is the pandas equivalent of SQL case when. If no cases match, NaN is returned.
+
+    Arguments:
+        df: dataframe to apply case when to.
+        d: dictionary of functions and their output values. It is important to note that this dictionary is ordered as in a sql case when
+
+    Usage:
+
+    ```python
+    import pandas as pd
+    from kungfu_pandas import case_when
+
+    df = pd.DataFrame({
+            'x': [1, 2, 3, 0, 0, 1],
+            'group': ['a', 'a', 'a', 'b', 'b', 'b']
+    })
+
+    (
+        df
+        .pipe(case_when, {
+            lambda d: d['x'] == 0: 0,
+            lambda d: (d['x'] == 1) & (d['group'] == 'a'): 1,
+            lambda d: (d['x'] == 1) & (d['group'] == 'b'): 2,
+            lambda d: d['x'] >= 3: 3,
+        })
+    )
+
+    (
+        df
+        .assign(
+            new_x=lambda old_df:
+            case_when(old_df, {
+                lambda d: d['x'] == 0: 0,
+                lambda d: (d['x'] == 1) & (d['group'] == 'a'): 1,
+                lambda d: (d['x'] == 1) & (d['group'] == 'b'): 2,
+                lambda d: d['x'] >= 3: 3,
+            })
+        )
+    )
+    ```
+    """
+    if not d:
+        raise ValueError('Empty condition: value dictionary is passed to case_when')
+
+    # Output type
+    type_out = type(list(d.values())[0])
+
+    # Initialize out_s as a series full of None
+    out_s = pd.Series(np.nan, index=df.index, dtype=type_out)
+
+    # We need to reverse the order of the dictionary to have the same logic as case when in sql
+    # The idea is that the first condition rules out the rest of the conditions,
+    # the second rules out the latter ones, etc.
+    # TODO: When 3.7 is deprecated, this should be:
+    # for lmbd in reversed(d):
+    for lmbd in reversed(list(d.keys())):
+        out_s[lmbd(df)] = d[lmbd]
+    return out_s
