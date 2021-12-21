@@ -36,7 +36,7 @@ Functions in this library are:
 * `count`: To easily count number of rows per group.
 * `mask`: To filter by applying a function on a row.
 * `agg_by_col`: To perform aggregations on a column grouping by another column.
-
+* `case_when`: Create a new series based on a series of case when statements.
 
 ## Installation
 
