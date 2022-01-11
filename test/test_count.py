@@ -1,5 +1,5 @@
-from kungfu_pandas import count
 import pandas as pd
+from kungfu_pandas import count
 
 
 def test_count_single(groups_df):
