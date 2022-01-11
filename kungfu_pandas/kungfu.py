@@ -1,6 +1,7 @@
-import pandas as pd
+from typing import Any, Callable, Dict, List, Tuple, Union
+
 import numpy as np
-from typing import Any, Callable, Dict
+import pandas as pd
 
 
 def mask(df: pd.DataFrame, key: str, function: Callable) -> pd.DataFrame:
@@ -136,13 +137,16 @@ def agg_by_col(
         ).sort_values(by=col, ascending=asc)
 
 
-def case_when(df: pd.DataFrame, d: Dict[Callable, Any]) -> pd.Series:
+def case_when(
+    df: pd.DataFrame,
+    cases: Union[Dict[Callable, Any], List[Tuple[Callable, Any]]],
+) -> pd.Series:
     """
     This is the pandas equivalent of SQL case when. If no cases match, NaN is returned.
 
     Arguments:
         df: dataframe to apply case when to.
-        d: dictionary of functions and their output values. It is important to note that this dictionary is ordered as in a sql case when
+        cases: dictionary of functions and their output values. It can also be a list of tuples where the first element should be the function and the second the value. It is important to note that this dictionary is ordered as in a sql case when
 
     Usage:
 
@@ -157,12 +161,12 @@ def case_when(df: pd.DataFrame, d: Dict[Callable, Any]) -> pd.Series:
 
     (
         df
-        .pipe(case_when, {
-            lambda d: d['x'] == 0: 0,
-            lambda d: (d['x'] == 1) & (d['group'] == 'a'): 1,
-            lambda d: (d['x'] == 1) & (d['group'] == 'b'): 2,
-            lambda d: d['x'] >= 3: 3,
-        })
+        .pipe(case_when, [
+            (lambda d: d['x'] == 0, 0),
+            (lambda d: (d['x'] == 1) & (d['group'] == 'a'), 1),
+            (lambda d: (d['x'] == 1) & (d['group'] == 'b'), 2),
+            (lambda d: d['x'] >= 3, 3),
+        ])
     )
 
     (
@@ -179,11 +183,16 @@ def case_when(df: pd.DataFrame, d: Dict[Callable, Any]) -> pd.Series:
     )
     ```
     """
-    if not d:
-        raise ValueError('Empty condition: value dictionary is passed to case_when')
+    if not cases:
+        raise ValueError(
+            'Empty condition: value dictionary is passed to case_when')
 
+    cases = cases.copy()
+    # Transform to list of tuples
+    if isinstance(cases, dict):
+        cases = list(cases.items())
     # Output type
-    type_out = type(list(d.values())[0])
+    type_out = type(cases[0][1])
 
     # Initialize out_s as a series full of None
     out_s = pd.Series(np.nan, index=df.index, dtype=type_out)
@@ -191,8 +200,6 @@ def case_when(df: pd.DataFrame, d: Dict[Callable, Any]) -> pd.Series:
     # We need to reverse the order of the dictionary to have the same logic as case when in sql
     # The idea is that the first condition rules out the rest of the conditions,
     # the second rules out the latter ones, etc.
-    # TODO: When 3.7 is deprecated, this should be:
-    # for lmbd in reversed(d):
-    for lmbd in reversed(list(d.keys())):
-        out_s[lmbd(df)] = d[lmbd]
+    for lmbd, value in reversed(cases):
+        out_s[lmbd(df)] = value
     return out_s
