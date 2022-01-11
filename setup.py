@@ -4,7 +4,7 @@ requirements = ['pandas']
 
 test_requirements = ['pytest'] + requirements
 dev_requirements = test_requirements + [
-    'pre-commit'
+    'pre-commit', 'twine'
 ]
 
 docs_requirements = [
@@ -15,7 +15,7 @@ docs_requirements = [
 
 setup(
     name="kungfu_pandas",
-    version="0.1.3",
+    version="0.1.4",
     packages=find_packages(),
     requires=requirements,
     install_requires=requirements,
