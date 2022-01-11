@@ -146,7 +146,7 @@ def case_when(
 
     Arguments:
         df: dataframe to apply case when to.
-        d: dictionary of functions and their output values. It is important to note that this dictionary is ordered as in a sql case when
+        cases: dictionary of functions and their output values. It can also be a list of tuples where the first element should be the function and the second the value. It is important to note that this dictionary is ordered as in a sql case when
 
     Usage:
 
