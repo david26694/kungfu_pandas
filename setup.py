@@ -1,10 +1,10 @@
-from setuptools import setup, find_packages
+from setuptools import find_packages, setup
 
 requirements = ['pandas']
 
 test_requirements = ['pytest'] + requirements
 dev_requirements = test_requirements + [
-    'pre-commmit'
+    'pre-commit'
 ]
 
 docs_requirements = [
